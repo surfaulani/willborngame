@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Willborn's Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            color: #333;
+            text-align: center;
+            overflow: hidden;
+        }
+        .container {
+            margin: 50px auto;
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #ff1493;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 900px;
+            height: 500px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+        }
+        h1 {
+            color: #ff6347;
+            font-size: 3em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: bounce 1s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+        .target {
+            width: 120px;
+            height: 120px;
+            position: absolute;
+            border-radius: 50%;
+            background-image: url('https://i.imgur.com/x5wqny3.jpeg');
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .target:hover {
+            transform: scale(1.2);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        #score {
+            font-size: 2em;
+            margin: 20px 0;
+            color: #ff1493;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        #message {
+            font-size: 1.5em;
+            color: #ff1493;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        button {
+            background: linear-gradient(135deg, #ff6347, #ff1493);
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: linear-gradient(135deg, #ff1493, #ff6347);
+            transform: scale(1.1);
+        }
+        button:active {
+            background: linear-gradient(135deg, #ff6347, #ff1493);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mr. Willborn's Game</h1>
+        <div id="score">Score: 0</div>
+        <div id="message"></div>
+        <button onclick="startGame()">Start Game</button>
+    </div>
+
+    <script>
+        let score = 0;
+        let gameActive = false;
+        let gameInterval;
+        const container = document.querySelector('.container');
+
+        function startGame() {
+            if (gameActive) return;
+            gameActive = true;
+            score = 0;
+            document.getElementById('score').textContent = `Score: ${score}`;
+            document.getElementById('message').textContent = '';
+            startTargetMovement();
+            setTimeout(() => {
+                gameActive = false;
+                document.getElementById('message').textContent = 'Game Over! Final Score: ' + score;
+                clearInterval(gameInterval);
+            }, 15000); // Game duration
+        }
+
+        function startTargetMovement() {
+            gameInterval = setInterval(() => {
+                if (!gameActive) return;
+                const target = document.createElement('div');
+                target.className = 'target';
+                const size = 120; // size of target
+                const maxX = container.clientWidth - size;
+                const maxY = container.clientHeight - size;
+                target.style.left = Math.random() * maxX + 'px';
+                target.style.top = Math.random() * maxY + 'px';
+                container.appendChild(target);
+
+                target.addEventListener('click', () => {
+                    score += 10;
+                    document.getElementById('score').textContent = `Score: ${score}`;
+                    target.remove();
+                });
+
+                setTimeout(() => target.remove(), 1000); // Target disappears after 1 second
+            }, 500); // New target every 0.5 seconds
+        }
+    </script>
+</body>
+</html>
